@@ -2,10 +2,20 @@ version: "3.9"
 
 services:
   api:
-    build: ./api
+    build: ./api # 独自のimageを使用する場合はbuildを使う
     ports:
       - 8080:8080
-# 以下のdocker commandと同じ処理
-# $ docker image build -t api-img ./api
-# $ docker container run -d --name api -p 8080:8080 api-
-# docker compose upで起動する
+  db:
+    image: postgres:15 # dockerhubから既成のものを使用
+    ports:
+      - 5432:5432 # 事前に決まっているport番号
+    environment:
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=appdb
+    volumes:
+      - db-storage:/var/lib/postgresql/data
+      - ./db/initdb:/docker-entrypoint-initdb.d # ホスト側のファイルをコンテナ側にマウントする
+
+volumes:
+  db-storage: # volume領域の宣言
