@@ -5,10 +5,12 @@ services:
     build: ./api # 独自のimageを使用する場合はbuildを使う
     ports:
       - 8080:8080
+    depends_on: # service間の依存関係を記述。起動する順番を制御。dbコンテナ→apiコンテナの順番で起動。
+      - db
   db:
-    image: postgres:15 # dockerhubから既成のものを使用
+    image: postgres:15 # dockerhubから既成のimageを使用
     ports:
-      - 5432:5432 # 事前に決まっているport番号
+      - 5432:5432 # postgresで事前に決まっているport番号
     environment:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_USER=postgres
